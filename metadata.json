@@ -1,0 +1,5 @@
+{
+  "name": "Virtual Try-On Studio",
+  "description": "A web application that allows users to virtually try on clothes. Users can upload a photo of themselves and a photo of a garment, and the AI will generate an image of them wearing the item.",
+  "requestFramePermissions": []
+}
