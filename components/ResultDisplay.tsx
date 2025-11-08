@@ -31,12 +31,35 @@ const Placeholder: React.FC = () => (
 
 
 export const ResultDisplay: React.FC<ResultDisplayProps> = ({ resultImage, isLoading }) => {
+  const handleDownload = () => {
+    if (!resultImage) return;
+
+    const link = document.createElement('a');
+    link.href = resultImage;
+    link.download = 'virtual-try-on.png';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+  
   return (
-    <div className="bg-gray-800 p-2 rounded-lg shadow-2xl aspect-w-3 aspect-h-4 min-h-[400px] lg:min-h-[600px] flex items-center justify-center">
+    <div className="relative bg-gray-800 p-2 rounded-lg shadow-2xl aspect-w-3 aspect-h-4 min-h-[400px] lg:min-h-[600px] flex items-center justify-center">
       {isLoading ? (
         <LoadingSkeleton />
       ) : resultImage ? (
-        <img src={resultImage} alt="Virtual try-on result" className="w-full h-full object-contain rounded-md" />
+        <>
+          <img src={resultImage} alt="Virtual try-on result" className="w-full h-full object-contain rounded-md" />
+          <button
+            onClick={handleDownload}
+            className="absolute bottom-4 right-4 bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-lg flex items-center gap-2 transition-transform duration-200 ease-in-out hover:scale-105 shadow-lg"
+            aria-label="Download image"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" />
+            </svg>
+            Download
+          </button>
+        </>
       ) : (
         <Placeholder />
       )}
