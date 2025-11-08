@@ -1,7 +1,8 @@
 
 import { GoogleGenAI, Modality } from "@google/genai";
 
-export const virtualTryOn = async (userImageBase64: string, garmentImageBase64: string, garmentMimeType: string): Promise<string> => {
+// Fix: Add userImageMimeType parameter for dynamic mime type handling.
+export const virtualTryOn = async (userImageBase64: string, userImageMimeType: string, garmentImageBase64: string, garmentMimeType: string): Promise<string> => {
   if (!process.env.API_KEY) {
     throw new Error("API_KEY environment variable is not set.");
   }
@@ -10,7 +11,8 @@ export const virtualTryOn = async (userImageBase64: string, garmentImageBase64: 
   const userImagePart = {
     inlineData: {
       data: userImageBase64,
-      mimeType: "image/jpeg", // Assume user image is jpeg, can be made dynamic
+      // Fix: Use the passed userImageMimeType instead of a hardcoded value.
+      mimeType: userImageMimeType,
     },
   };
 
@@ -35,10 +37,11 @@ export const virtualTryOn = async (userImageBase64: string, garmentImageBase64: 
     },
   });
   
-  const firstPart = response.candidates?.[0]?.content?.parts?.[0];
-
-  if (firstPart && firstPart.inlineData) {
-    return firstPart.inlineData.data;
+  // Fix: Iterate through response parts to robustly find and return the image data.
+  for (const part of response.candidates?.[0]?.content?.parts || []) {
+    if (part.inlineData) {
+      return part.inlineData.data;
+    }
   }
 
   throw new Error("Could not extract image from Gemini response.");

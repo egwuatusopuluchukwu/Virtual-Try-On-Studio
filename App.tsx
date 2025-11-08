@@ -58,7 +58,8 @@ const App: React.FC = () => {
     setResultImage(null);
 
     try {
-      const generatedImage = await virtualTryOn(userImage.base64, garmentImage.base64, garmentImage.file.type);
+      // Fix: Pass the user image mime type to the virtualTryOn service for accuracy.
+      const generatedImage = await virtualTryOn(userImage.base64, userImage.file.type, garmentImage.base64, garmentImage.file.type);
       setResultImage(`data:image/png;base64,${generatedImage}`);
     } catch (err) {
       console.error(err);
